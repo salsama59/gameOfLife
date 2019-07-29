@@ -27,6 +27,12 @@ public class DataManager {
 		this.setLoadedSimulationGrid(this.loadSimulationGid());
 	}
 
+	public boolean isDataFilesExisting() {
+		File gridSavedFile = new File("simulation_grid_data.csv");
+		File parametersSavedFile = new File("simulation_parameters_data.json");
+		return gridSavedFile.exists() && parametersSavedFile.exists();
+	}
+
 
 	private int[][] loadSimulationGid() {
 		SimulationParameters loadedSimulationParameters = this.getLoadedSimulationParameters();

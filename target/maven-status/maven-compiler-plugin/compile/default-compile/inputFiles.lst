@@ -1,7 +1,9 @@
 C:\Users\sauly\Documents\workspace_jeu_de_la_vie\GameOfLife\src\main\java\com\internal\gameoflife\simulation\GameOfLifeSimulation.java
+C:\Users\sauly\Documents\workspace_jeu_de_la_vie\GameOfLife\src\main\java\com\internal\gameoflife\data\DataManager.java
 C:\Users\sauly\Documents\workspace_jeu_de_la_vie\GameOfLife\src\main\java\com\internal\gameoflife\utils\ProgramArgumentsUtils.java
 C:\Users\sauly\Documents\workspace_jeu_de_la_vie\GameOfLife\src\main\java\com\internal\gameoflife\enums\GridCellState.java
 C:\Users\sauly\Documents\workspace_jeu_de_la_vie\GameOfLife\src\main\java\com\internal\gameoflife\utils\GridUtils.java
+C:\Users\sauly\Documents\workspace_jeu_de_la_vie\GameOfLife\src\main\java\com\internal\gameoflife\dto\SimulationParameters.java
 C:\Users\sauly\Documents\workspace_jeu_de_la_vie\GameOfLife\src\main\java\com\internal\gameoflife\constants\GridConstants.java
 C:\Users\sauly\Documents\workspace_jeu_de_la_vie\GameOfLife\src\main\java\com\internal\gameoflife\enums\ProgramArguments.java
 C:\Users\sauly\Documents\workspace_jeu_de_la_vie\GameOfLife\src\main\java\com\internal\gameoflife\GameOfLife.java

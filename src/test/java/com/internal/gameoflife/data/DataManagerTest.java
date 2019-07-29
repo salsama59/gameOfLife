@@ -2,6 +2,7 @@ package com.internal.gameoflife.data;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -39,6 +40,19 @@ public class DataManagerTest {
 		assertNotNull(dataManager.getLoadedSimulationParameters());
 		assertEquals(simulationParameters, dataManager.getLoadedSimulationParameters());
 		assertArrayEquals(null, gridToSave, dataManager.getLoadedSimulationGrid());
+	}
+
+	@Test
+	public void isDataFilesExistingTest() {
+		saveTestDatas();
+		DataManager dataManager = new DataManager();
+		assertTrue(dataManager.isDataFilesExisting());
+	}
+
+	@Test
+	public void isDataFilesExistingWithoutFilesTest() {
+		DataManager dataManager = new DataManager();
+		assertFalse(dataManager.isDataFilesExisting());
 	}
 
 	private void saveTestDatas() {

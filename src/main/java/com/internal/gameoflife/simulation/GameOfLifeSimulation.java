@@ -19,10 +19,11 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 	private SimulationParameters simulationParameters;
 
 
-	public GameOfLifeSimulation(int[][] grid, int refreshRate, float initialActivatedCellPercentage) {
+	public GameOfLifeSimulation(int[][] grid, int refreshRate, float initialActivatedCellPercentage, long simulationIteration) {
 		this.grid = grid;
 		this.refreshRate = refreshRate;
 		this.dataManager = new DataManager();
+		this.simulationIteration = simulationIteration;
 		this.simulationParameters = new SimulationParameters(
 				this.refreshRate,
 				this.simulationIteration,
@@ -33,16 +34,18 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 
 	@Override
 	public void run() {
+		this.displayGrid();
+		this.updateSimulationIteration();
 		while (true) {
-			this.displayGrid();
 			this.updateCellsStateInGrid();
+			this.displayGrid();
+			this.updateSimulationIteration();
 			this.getDataManager().saveDatas(grid, simulationParameters);
 			try {
 				sleep(this.getRefreshRate() * 1000);
 			} catch (InterruptedException ex) { 
 				System.out.println("The thread has been interrupted");
 			}
-
 		}
 	}
 
@@ -102,6 +105,9 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 			System.out.println();
 		});
 		System.out.println("********** End of Simulation iterration " + this.getSimulationIteration() + " **********");
+	}
+
+	private void updateSimulationIteration() {
 		this.setSimulationIteration(this.getSimulationIteration() + 1);
 		this.getSimulationParameters().setSimulationIteration(simulationIteration);
 	}
