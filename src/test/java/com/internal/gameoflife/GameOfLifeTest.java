@@ -3,11 +3,9 @@ package com.internal.gameoflife;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Properties;
 import java.util.stream.IntStream;
 
 import org.junit.BeforeClass;
@@ -19,18 +17,16 @@ import com.internal.gameoflife.constants.PropertyKeyConstants;
 import com.internal.gameoflife.dto.SimulationParameters;
 import com.internal.gameoflife.enums.GridCellState;
 import com.internal.gameoflife.utils.GridUtils;
+import com.internal.gameoflife.utils.TestsUtils;
 
 public class GameOfLifeTest {
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
-	
+
 	@BeforeClass
 	public static void loadProperties() throws FileNotFoundException, IOException {
-		String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-		String appConfigPath = rootPath + "application-test.properties";
-		GameOfLife.applicationProperties = new Properties();
-		GameOfLife.applicationProperties.load(new FileInputStream(appConfigPath));	
+		TestsUtils.loadTestsConfigurationProperties();
 	}
 
 	@Test
@@ -60,7 +56,7 @@ public class GameOfLifeTest {
 		assertEquals(Integer.parseInt(rowLength), GridUtils.getGridRowLenth(grid));
 		assertEquals(Integer.parseInt(columnLength), GridUtils.getGridColumnLenth(grid));
 	}
-	
+
 	@Test
 	public void initializeGridLengthWithLoadedValueTest() {
 		String programmArgumentsRowLength = "10";

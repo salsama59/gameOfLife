@@ -2,25 +2,20 @@ package com.internal.gameoflife.simulation;
 
 import static org.junit.Assert.assertArrayEquals;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Properties;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.internal.gameoflife.GameOfLife;
+import com.internal.gameoflife.utils.TestsUtils;
 
 public class GameOfLifeSimulationTest {
-	
+
 	@BeforeClass
 	public static void loadProperties() throws FileNotFoundException, IOException {
-		String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-		String appConfigPath = rootPath + "application-test.properties";
-		GameOfLife.applicationProperties = new Properties();
-		GameOfLife.applicationProperties.load(new FileInputStream(appConfigPath));	
+		TestsUtils.loadTestsConfigurationProperties();
 	}
 
 	@Test
