@@ -23,7 +23,7 @@ import com.internal.gameoflife.utils.ProgramArgumentsUtils;
 
 public class GameOfLife {
 	
-	static Properties applicationProperties;
+	public static Properties applicationProperties;
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		
