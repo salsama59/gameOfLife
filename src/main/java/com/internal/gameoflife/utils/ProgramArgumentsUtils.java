@@ -21,4 +21,8 @@ public class ProgramArgumentsUtils {
 	public static boolean isArgumentValueFloatingNumber(String argumentValue) {
 		return argumentValue.matches("^[0-9]+([.][0-9]+)?$");
 	}
+	
+	public static boolean hasNecessaryArguments(String [] programmArguments) {
+		return programmArguments.length == ProgramArgumentsUtils.MAX_ALOWED_ARGUMENTS;
+	}
 }

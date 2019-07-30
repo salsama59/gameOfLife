@@ -1,13 +1,18 @@
 package com.internal.gameoflife;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Scanner;
 
+import com.internal.gameoflife.constants.PropertyKeyConstants;
 import com.internal.gameoflife.data.DataManager;
 import com.internal.gameoflife.dto.SimulationParameters;
 import com.internal.gameoflife.enums.GridCellState;
@@ -17,11 +22,18 @@ import com.internal.gameoflife.utils.GridUtils;
 import com.internal.gameoflife.utils.ProgramArgumentsUtils;
 
 public class GameOfLife {
+	
+	static Properties applicationProperties;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		
+		String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+		String appConfigPath = rootPath + "application.properties";
+		applicationProperties = new Properties();
+		applicationProperties.load(new FileInputStream(appConfigPath));	
 
 		SimulationParameters loadedSimulationParameters = null;
-		int[][] loadeGrid = null;
+		int[][] loadedGrid = null;
 		DataManager dataManager = new DataManager();
 
 		if(dataManager.isDataFilesExisting()) {
@@ -35,7 +47,7 @@ public class GameOfLife {
 				dataManager = new DataManager();
 				dataManager.loadDatas();
 				loadedSimulationParameters = dataManager.getLoadedSimulationParameters();
-				loadeGrid = dataManager.getLoadedSimulationGrid();
+				loadedGrid = dataManager.getLoadedSimulationGrid();
 			}
 			scanner.close();
 		}
@@ -50,7 +62,7 @@ public class GameOfLife {
 		int refreshRate = 0;
 		long simulationIteration = 0;
 
-		if(loadeGrid == null ) {
+		if(loadedGrid == null && ProgramArgumentsUtils.hasNecessaryArguments(args)) {
 			String stringInitialActivatedCellPercentage = ProgramArgumentsUtils.retrieveArgumentValue(args, ProgramArguments.INITIAL_LIVING_CELL_PERCENTAGE);
 			if(ProgramArgumentsUtils.isArgumentValueValid(stringInitialActivatedCellPercentage) 
 					&& ProgramArgumentsUtils.isArgumentValueFloatingNumber(stringInitialActivatedCellPercentage)) {
@@ -73,11 +85,18 @@ public class GameOfLife {
 			int initialActiveCellNumber = (int) Math.floor(initialActivatedCellPercentage * cellTotalNumber/100);
 			grid = initializeGridCellsValue(grid, initialActiveCellNumber);
 		}
-		else {
-			grid = loadeGrid;
+		else if(loadedGrid != null) {
+			grid = loadedGrid;
 			initialActivatedCellPercentage = loadedSimulationParameters.getInitialActivatedCellPercentage();
 			refreshRate = loadedSimulationParameters.getRefreshRate();
 			simulationIteration = loadedSimulationParameters.getSimulationIteration();
+		}
+		else {
+			initialActivatedCellPercentage = Float.parseFloat(applicationProperties.getProperty(PropertyKeyConstants.ACTIVATED_CELL_PERCENTAGE_KEY));
+			refreshRate = Integer.parseInt(applicationProperties.getProperty(PropertyKeyConstants.REFRESH_RATE_KEY));
+			int cellTotalNumber = GridUtils.getGridRowLenth(grid) * GridUtils.getGridColumnLenth(grid);
+			int initialActiveCellNumber = (int) Math.floor(initialActivatedCellPercentage * cellTotalNumber/100);
+			grid = initializeGridCellsValue(grid, initialActiveCellNumber);
 		}
 
 		GameOfLifeSimulation gameOfLifeSimulation = new GameOfLifeSimulation(grid, refreshRate, initialActivatedCellPercentage, simulationIteration);
@@ -87,11 +106,8 @@ public class GameOfLife {
 	public static int[][] initializeGridLength(String[] programmArguments, SimulationParameters loadedSimulationParameters) {
 		int rowLength = 0;
 		int columnLength = 0;
-		if(loadedSimulationParameters == null) {
-			if(programmArguments.length < ProgramArgumentsUtils.MAX_ALOWED_ARGUMENTS) {
-				throw new RuntimeException("The grid row lenght and the grid column length arguments are mandatory");
-			}
-
+		if(loadedSimulationParameters == null && ProgramArgumentsUtils.hasNecessaryArguments(programmArguments)) {
+			
 			String stringRowLength = ProgramArgumentsUtils.retrieveArgumentValue(programmArguments, ProgramArguments.GRID_ROW_SIZE);
 			if(ProgramArgumentsUtils.isArgumentValueValid(stringRowLength) && ProgramArgumentsUtils.isArgumentIntegerValue(stringRowLength)) {
 				rowLength = Integer.valueOf(stringRowLength);
@@ -109,9 +125,13 @@ public class GameOfLife {
 				throw new RuntimeException("The grid column lenght argument is mandatory and must be an integer value");
 			}
 		}
-		else {
+		else if(loadedSimulationParameters != null){
 			columnLength = loadedSimulationParameters.getColumnLength();
 			rowLength = loadedSimulationParameters.getRowLength();
+		}
+		else {
+			columnLength = Integer.parseInt(applicationProperties.getProperty(PropertyKeyConstants.GRID_COLUMN_LENGTH_KEY));
+			rowLength = Integer.parseInt(applicationProperties.getProperty(PropertyKeyConstants.GRID_ROW_LENGTH_KEY));
 		}
 
 		int[][] grid = new int[rowLength][columnLength];
