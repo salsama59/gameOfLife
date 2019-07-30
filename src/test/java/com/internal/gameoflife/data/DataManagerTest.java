@@ -7,16 +7,25 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.internal.gameoflife.dto.SimulationParameters;
+import com.internal.gameoflife.utils.TestsUtils;
 
 public class DataManagerTest {
 
 	private SimulationParameters simulationParameters;
 	private final static int[][] gridToSave = {{1, 0, 1}, {0, 1, 0}, {1, 0, 1}};
+
+	@BeforeClass
+	public static void loadProperties() throws FileNotFoundException, IOException {
+		TestsUtils.loadTestsConfigurationProperties();	
+	}
 
 	@After
 	public void deleteTestFiles() {

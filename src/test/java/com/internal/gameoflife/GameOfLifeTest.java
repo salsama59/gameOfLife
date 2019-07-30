@@ -3,21 +3,31 @@ package com.internal.gameoflife;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.internal.gameoflife.constants.PropertyKeyConstants;
 import com.internal.gameoflife.dto.SimulationParameters;
 import com.internal.gameoflife.enums.GridCellState;
 import com.internal.gameoflife.utils.GridUtils;
+import com.internal.gameoflife.utils.TestsUtils;
 
 public class GameOfLifeTest {
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
+
+	@BeforeClass
+	public static void loadProperties() throws FileNotFoundException, IOException {
+		TestsUtils.loadTestsConfigurationProperties();
+	}
 
 	@Test
 	public void initializeGridCellsValueTest() {
@@ -46,7 +56,7 @@ public class GameOfLifeTest {
 		assertEquals(Integer.parseInt(rowLength), GridUtils.getGridRowLenth(grid));
 		assertEquals(Integer.parseInt(columnLength), GridUtils.getGridColumnLenth(grid));
 	}
-	
+
 	@Test
 	public void initializeGridLengthWithLoadedValueTest() {
 		String programmArgumentsRowLength = "10";
@@ -94,10 +104,12 @@ public class GameOfLifeTest {
 
 	@Test
 	public void initializeGridLengthWithoutSufficientArgumentTest() {
-		exception.expect(RuntimeException.class);
-		exception.expectMessage("The grid row lenght and the grid column length arguments are mandatory");
 		String[] args = {"5"};
-		GameOfLife.initializeGridLength(args, null);
+		int[][] initializedGrid = GameOfLife.initializeGridLength(args, null);
+		assertEquals(Integer.parseInt(GameOfLife.applicationProperties.getProperty(PropertyKeyConstants.GRID_COLUMN_LENGTH_KEY))
+				, GridUtils.getGridColumnLenth(initializedGrid));
+		assertEquals(Integer.parseInt(GameOfLife.applicationProperties.getProperty(PropertyKeyConstants.GRID_ROW_LENGTH_KEY))
+				, GridUtils.getGridRowLenth(initializedGrid));
 	}
 
 	private void expectExceptionForRowValue() {

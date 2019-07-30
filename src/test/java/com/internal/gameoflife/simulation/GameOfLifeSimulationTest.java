@@ -2,11 +2,21 @@ package com.internal.gameoflife.simulation;
 
 import static org.junit.Assert.assertArrayEquals;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.internal.gameoflife.utils.TestsUtils;
+
 public class GameOfLifeSimulationTest {
+
+	@BeforeClass
+	public static void loadProperties() throws FileNotFoundException, IOException {
+		TestsUtils.loadTestsConfigurationProperties();
+	}
 
 	@Test
 	public void updateCellsStateInGridTest() {

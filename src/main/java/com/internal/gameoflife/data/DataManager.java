@@ -10,12 +10,28 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.internal.gameoflife.GameOfLife;
+import com.internal.gameoflife.constants.PropertyKeyConstants;
 import com.internal.gameoflife.dto.SimulationParameters;
 
 public class DataManager {
-
+	private String csvFileSeparator;
+	private String gridSavedFilePath;
+	private String parametersSavedFilePath;
 	private int[][] loadedSimulationGrid;
 	private SimulationParameters loadedSimulationParameters;
+
+	public DataManager() {
+		this.gridSavedFilePath = GameOfLife
+				.applicationProperties
+				.getProperty(PropertyKeyConstants.DATA_SIMULATION_GRID_FILE_PATH_KEY);
+		this.parametersSavedFilePath =  GameOfLife
+				.applicationProperties
+				.getProperty(PropertyKeyConstants.DATA_SIMULATION_PARAMETER_FILE_PATH_KEY);
+		this.csvFileSeparator =  GameOfLife
+				.applicationProperties
+				.getProperty(PropertyKeyConstants.DATA_SIMULATION_GRID_CSV_FILE_SEPARATOR_KEY);
+	}
 
 	public void saveDatas(int[][] grid, SimulationParameters simulationParameters) {
 		this.saveSimulationGrid(grid);
@@ -28,8 +44,8 @@ public class DataManager {
 	}
 
 	public boolean isDataFilesExisting() {
-		File gridSavedFile = new File("simulation_grid_data.csv");
-		File parametersSavedFile = new File("simulation_parameters_data.json");
+		File gridSavedFile = new File(this.getGridSavedFilePath());
+		File parametersSavedFile = new File(this.getParametersSavedFilePath());
 		return gridSavedFile.exists() && parametersSavedFile.exists();
 	}
 
@@ -38,10 +54,10 @@ public class DataManager {
 		SimulationParameters loadedSimulationParameters = this.getLoadedSimulationParameters();
 		int[][] loadedGrid = new int[loadedSimulationParameters.getRowLength()][loadedSimulationParameters.getColumnLength()];
 		int rowCount = 0;
-		try (BufferedReader bufferedReader = new BufferedReader(new FileReader("simulation_grid_data.csv"))) {
+		try (BufferedReader bufferedReader = new BufferedReader(new FileReader(this.getGridSavedFilePath()))) {
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
-				String[] values = line.split(",");
+				String[] values = line.split(this.getCsvFileSeparator());
 				loadedGrid[rowCount] = Arrays.stream(values)
 						.mapToInt(value -> Integer.parseInt(value)).toArray();
 				rowCount++;
@@ -60,7 +76,7 @@ public class DataManager {
 		ObjectMapper objectMapper = new ObjectMapper();
 		SimulationParameters simulationParameters = null;
 		try {
-			simulationParameters = objectMapper.readValue(new File("simulation_parameters_data.json"), SimulationParameters.class);
+			simulationParameters = objectMapper.readValue(new File(this.getParametersSavedFilePath()), SimulationParameters.class);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -74,11 +90,11 @@ public class DataManager {
 		.forEach(cellArray -> {
 			stringBuilder.append(Arrays.stream(cellArray)
 					.mapToObj(cell -> String.valueOf(cell))
-					.collect(Collectors.joining(","))
+					.collect(Collectors.joining(this.getCsvFileSeparator()))
 					.concat("\n"));
 		});
 
-		File csvOutputFile = new File("simulation_grid_data.csv");
+		File csvOutputFile = new File(this.getGridSavedFilePath());
 		try (PrintWriter printWriter = new PrintWriter(csvOutputFile)) {
 			printWriter.print(stringBuilder.toString());
 		} catch (FileNotFoundException e) {
@@ -89,7 +105,7 @@ public class DataManager {
 	private void saveSimulationParameters(SimulationParameters simulationParameters) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			objectMapper.writeValue(new File("simulation_parameters_data.json"), simulationParameters);
+			objectMapper.writeValue(new File(this.getParametersSavedFilePath()), simulationParameters);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -109,6 +125,30 @@ public class DataManager {
 
 	public void setLoadedSimulationParameters(SimulationParameters loadedSimulationParameters) {
 		this.loadedSimulationParameters = loadedSimulationParameters;
+	}
+
+	public String getGridSavedFilePath() {
+		return gridSavedFilePath;
+	}
+
+	public void setGridSavedFilePath(String gridSavedFilePath) {
+		this.gridSavedFilePath = gridSavedFilePath;
+	}
+
+	public String getParametersSavedFilePath() {
+		return parametersSavedFilePath;
+	}
+
+	public void setParametersSavedFilePath(String parametersSavedFilePath) {
+		this.parametersSavedFilePath = parametersSavedFilePath;
+	}
+
+	public String getCsvFileSeparator() {
+		return csvFileSeparator;
+	}
+
+	public void setCsvFileSeparator(String csvFileSeparator) {
+		this.csvFileSeparator = csvFileSeparator;
 	}
 
 
