@@ -4,11 +4,14 @@ import java.awt.Point;
 import java.util.Arrays;
 import java.util.List;
 
+import com.internal.gameoflife.GameOfLife;
 import com.internal.gameoflife.constants.GridConstants;
+import com.internal.gameoflife.constants.PropertyKeyConstants;
 import com.internal.gameoflife.data.DataManager;
 import com.internal.gameoflife.dto.SimulationParameters;
 import com.internal.gameoflife.enums.GridCellState;
 import com.internal.gameoflife.utils.GridUtils;
+import com.internal.gameoflife.utils.MessageUtils;
 
 public class GameOfLifeSimulation extends Thread implements Runnable{
 
@@ -49,7 +52,7 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 				sleep(this.getRefreshRate() * 1000);
 				this.setSleeping(false);
 			} catch (InterruptedException ex) { 
-				System.out.println("The thread has been interrupted");
+				System.out.println(GameOfLife.resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_THREAD_INTERRUPTED_EXCEPTION));
 			}
 		}
 	}
@@ -101,7 +104,7 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 
 	private void displayGridInConsole() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("********** Begining of Simulation iterration " + this.getSimulationIteration() + " **********")
+		stringBuilder.append(MessageUtils.getFormatedMessage(PropertyKeyConstants.APPLICATION_MESSAGE_CONSOLE_DISPLAY_END, this.getSimulationIteration()))
 		.append("\n");
 		Arrays.stream(this.getGrid())
 		.forEach(cellArray -> {
@@ -111,7 +114,7 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 			});
 			stringBuilder.append("\n");
 		});
-		stringBuilder.append("********** End of Simulation iterration " + this.getSimulationIteration() + " **********")
+		stringBuilder.append(MessageUtils.getFormatedMessage(PropertyKeyConstants.APPLICATION_MESSAGE_CONSOLE_DISPLAY_END, this.getSimulationIteration()))
 		.append("\n");
 
 		System.out.println(stringBuilder.toString());

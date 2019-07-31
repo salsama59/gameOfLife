@@ -28,7 +28,7 @@ public class DataManagerTest {
 
 	@BeforeClass
 	public static void loadProperties() throws FileNotFoundException, IOException {
-		TestsUtils.loadTestsConfigurationProperties();
+		TestsUtils.loadTestsProperties();
 		setGridDataFilePath(GameOfLife.applicationProperties.getProperty(PropertyKeyConstants.DATA_SIMULATION_GRID_FILE_PATH_KEY));
 		setParametersDataFilePath(GameOfLife.applicationProperties.getProperty(PropertyKeyConstants.DATA_SIMULATION_PARAMETER_FILE_PATH_KEY));
 	}

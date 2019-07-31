@@ -15,7 +15,7 @@ public class GameOfLifeSimulationTest {
 
 	@BeforeClass
 	public static void loadProperties() throws FileNotFoundException, IOException {
-		TestsUtils.loadTestsConfigurationProperties();
+		TestsUtils.loadTestsProperties();
 	}
 
 	@Test
