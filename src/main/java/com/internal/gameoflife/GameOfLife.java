@@ -24,6 +24,10 @@ import com.internal.gameoflife.simulation.GameOfLifeSimulation;
 import com.internal.gameoflife.utils.GridUtils;
 import com.internal.gameoflife.utils.ProgramArgumentsUtils;
 
+/**
+ * The main class of the application
+ * @author syeponde
+ */
 public class GameOfLife {
 
 	public static Properties applicationProperties;
@@ -118,6 +122,14 @@ public class GameOfLife {
 		}
 	}
 
+	/**
+	 * Initialize the grid size either from arguments, application property value or loaded data file value.
+	 * The priority goes as follow : 1st argument value is used, if there is no arguments the application property value will be used
+	 * , however if the user as choosed to load the old simulation datas then it is those who will be used to populate the row length and the column length value.
+	 * @param programmArguments the programm argument array containing the grid row and column size.
+	 * @param loadedSimulationParameters the simulation parameters loaded or not
+	 * @return the grid initialized with the rigth size.
+	 */
 	public static int[][] initializeGridLength(String[] programmArguments, SimulationParameters loadedSimulationParameters) {
 		int rowLength = 0;
 		int columnLength = 0;
@@ -153,6 +165,12 @@ public class GameOfLife {
 		return grid;
 	} 
 
+	/**
+	 * Initialize the grid cell values by randomly place activated cell define by the initialActivatedCellNumber parameter
+	 * @param grid the grid to update with the initial values.
+	 * @param initialActivatedCellNumber the number of desired alive cells in the grid
+	 * @return the grid with initialize cells values, randomly chosen.
+	 */
 	public static int[][] initializeGridCellsValue(int[][] grid, int initialActivatedCellNumber) {
 
 		int cellUpdatedCount = 0;
@@ -193,10 +211,18 @@ public class GameOfLife {
 		return grid;
 	}
 
+	/**
+	 * Load the resource bundle necessary for the application message definition
+	 */
 	private static void loadApplicationResourceBundle() {
 		resourceBundle = ResourceBundle.getBundle("message", Locale.getDefault());
 	}
 
+	/**
+	 * Load the application properties necessary for the various application parameters
+	 * @throws IOException if an issue involve the file parsing
+	 * @throws FileNotFoundException if the file is not found
+	 */
 	private static void loadApplicationProperties() throws IOException, FileNotFoundException {
 		String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
 		String appConfigPath = rootPath + "application.properties";

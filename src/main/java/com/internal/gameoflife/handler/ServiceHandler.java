@@ -6,6 +6,12 @@ import java.net.Socket;
 
 import com.internal.gameoflife.simulation.GameOfLifeSimulation;
 
+/**
+ * This class is responsible for executing the action for the server
+ * It write the simulation grid data into the outputstream of the client socket,
+ * when the simulation thread isn't sleeping
+ * @author syeponde
+ */
 public class ServiceHandler extends Thread implements Runnable {
 	private Socket clientSocket;
 	private GameOfLifeSimulation simulation;
