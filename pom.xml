@@ -4,10 +4,47 @@
   <artifactId>GameOfLife</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>GameOfLife</name>
+  <packaging>jar</packaging>
   <description>A game of life implementation</description>
   <build>
+  	<resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>*.properties</include>
+        </includes>
+      </resource>
+    </resources>
     <sourceDirectory>src/main/java</sourceDirectory>
     <plugins>
+    
+    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-assembly-plugin</artifactId>
+		<version>2.4.1</version>
+		<configuration>
+			<!-- get all project dependencies -->
+			<descriptorRefs>
+				<descriptorRef>jar-with-dependencies</descriptorRef>
+			</descriptorRefs>
+			<!-- MainClass in mainfest make a executable jar -->
+			<archive>
+			  <manifest>
+				<mainClass>com.internal.gameoflife.GameOfLife</mainClass>
+			  </manifest>
+			</archive>
+		</configuration>
+		<executions>
+		  <execution>
+			<id>make-assembly</id>
+            <!-- bind to the packaging phase -->
+			<phase>package</phase> 
+			<goals>
+				<goal>single</goal>
+			</goals>
+		  </execution>
+		</executions>
+	  </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
@@ -16,6 +53,37 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<version>2.4</version>
+			<configuration>
+			  <archive>
+			    <manifest>
+				<mainClass>com.internal.gameoflife.GameOfLife</mainClass>
+			    </manifest>
+			  </archive>
+			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-dependency-plugin</artifactId>
+			<version>2.5.1</version>
+			<executions>
+			  <execution>
+				<id>copy-dependencies</id>
+				<phase>package</phase>
+				<goals>
+				    <goal>copy-dependencies</goal>
+				</goals>
+				<configuration>
+				    <outputDirectory>
+		             	${project.build.directory}/dependency-jars/
+		            </outputDirectory>
+				</configuration>
+			    </execution>
+			</executions>
+  		</plugin>
     </plugins>
   </build>
   

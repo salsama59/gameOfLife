@@ -224,8 +224,8 @@ public class GameOfLife {
 	 * @throws FileNotFoundException if the file is not found
 	 */
 	private static void loadApplicationProperties() throws IOException, FileNotFoundException {
-		String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-		String appConfigPath = rootPath + "application.properties";
+		//String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+		String appConfigPath = "src/main/resources/application.properties";
 		applicationProperties = new Properties();
 		applicationProperties.load(new FileInputStream(appConfigPath));
 	}
