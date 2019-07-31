@@ -67,7 +67,7 @@ public class DataManager {
 	}
 
 	/**
-	 * Load Specificaly the simulation grid data file if it exists
+	 * Load Specificaly the simulation grid data file if it exists from a csv file
 	 * @return the grid loaded
 	 */
 	private int[][] loadSimulationGid() {
@@ -92,7 +92,7 @@ public class DataManager {
 	}
 	
 	/**
-	 * Load the simulation parameters file data if it exists
+	 * Load the simulation parameters file data if it exists from a json file
 	 * @return the loaded simulation parameters file data
 	 */
 	private SimulationParameters loadSimulationParameters() {
@@ -107,7 +107,11 @@ public class DataManager {
 
 		return simulationParameters;
 	}
-
+	
+	/**
+	 * Save the simulation grid data in a csv file
+	 * @param grid the grid to save
+	 */
 	private void saveSimulationGrid(int[][] grid) {
 		StringBuilder stringBuilder = new StringBuilder();
 		Arrays.stream(grid)
@@ -125,7 +129,11 @@ public class DataManager {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Save the simulation parameters data in a json file
+	 * @param simulationParameters the parameters to save
+	 */
 	private void saveSimulationParameters(SimulationParameters simulationParameters) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {

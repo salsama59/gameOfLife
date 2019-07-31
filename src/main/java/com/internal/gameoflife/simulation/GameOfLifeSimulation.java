@@ -13,6 +13,13 @@ import com.internal.gameoflife.enums.GridCellState;
 import com.internal.gameoflife.utils.GridUtils;
 import com.internal.gameoflife.utils.MessageUtils;
 
+/**
+ * The GameOfLifeSimulation class allows to calculate the grid evolution throught time.
+ * The simulation datas are saved at each iteration intervals.
+ * The display is done in the standard output, and the simulationBuffer data destined for the TCP clients are calculated each iteration.
+ * @author syeponde
+ *
+ */
 public class GameOfLifeSimulation extends Thread implements Runnable{
 
 	private int[][] grid;
@@ -57,6 +64,10 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 		}
 	}
 
+	/**
+	 * Update the grid once by verifying the surrounding cell for each cells of the grid
+	 * the cell state transition is determined by specific rules.
+	 */
 	public void updateCellsStateInGrid() {
 		for(int rowIndex = 0; rowIndex < GridUtils.getGridRowLenth(this.getGrid()); rowIndex++) {
 			for(int columnIndex = 0; columnIndex < GridUtils.getGridColumnLenth(this.getGrid()); columnIndex++) {
@@ -74,6 +85,13 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 		}
 	}
 
+	/**
+	 * Deactivate a cell by verifying every cell surrounding and applying the specific rules.
+	 * Notes that this method is called in case the checked cell is alive (activated)
+	 * @param rowIndex the current row index for the grid
+	 * @param columnIndex the current column index for the grid
+	 * @param suroundingCoordinates the list of grid coordinate surrounding the checked cell
+	 */
 	private void deactivateCell(int rowIndex, int columnIndex, List<Point> suroundingCoordinates) {
 		int proximityCounter = checkCellSurroundings(suroundingCoordinates);
 
@@ -82,6 +100,13 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 		}
 	}
 
+	/**
+	 * Activate a cell by verifying every cell surrounding and applying the specific rules.
+	 * Notes that this method is called in case the checked cell is dead (deactivated)
+	 * @param rowIndex the current row index for the grid
+	 * @param columnIndex the current column index for the grid
+	 * @param suroundingCoordinates the list of grid coordinate surrounding the checked cell
+	 */
 	private void activateCell(int rowIndex, int columnIndex, List<Point> suroundingCoordinates) {
 		int proximityCounter = checkCellSurroundings(suroundingCoordinates);
 
@@ -90,6 +115,11 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 		}
 	}
 
+	/**
+	 * By itterating on a cell surrounding coordinate list count the number of alive cell
+	 * @param suroundingCoordinates the list of cell coordinates surrounding the checked cell
+	 * @return the number of cell alive adjacent to the checked cell.
+	 */
 	private int checkCellSurroundings(List<Point> suroundingCoordinates) {
 		int proximityCounter = 0;
 		for(Point coordinate : suroundingCoordinates) {
@@ -102,6 +132,9 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 		return proximityCounter;
 	}
 
+	/**
+	 * Display the grid simulation data in the standard output
+	 */
 	private void displayGridInConsole() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(MessageUtils.getFormatedMessage(PropertyKeyConstants.APPLICATION_MESSAGE_CONSOLE_DISPLAY_END, this.getSimulationIteration()))
@@ -121,6 +154,9 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 		this.setSimulationBuffer(stringBuilder.toString());
 	}
 
+	/**
+	 * Update the simulation iteration attribute and store it in simulation parameter object for later save in file.
+	 */
 	private void updateSimulationIteration() {
 		this.setSimulationIteration(this.getSimulationIteration() + 1);
 		this.getSimulationParameters().setSimulationIteration(simulationIteration);

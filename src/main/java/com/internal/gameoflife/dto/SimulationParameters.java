@@ -1,5 +1,9 @@
 package com.internal.gameoflife.dto;
 
+/**
+ * This class purpose is to store the simulation parameters
+ * @author syeponde
+ */
 public class SimulationParameters {
 
 	private int refreshRate;
