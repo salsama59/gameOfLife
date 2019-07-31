@@ -89,7 +89,7 @@ public class GameOfLife {
 			String stringIsTcpServerModeEnabled = ProgramArgumentsUtils.retrieveArgumentValue(args, ProgramArguments.TCP_SERVER_MODE);
 			if(ProgramArgumentsUtils.isArgumentValueValid(stringIsTcpServerModeEnabled) 
 					&& ProgramArgumentsUtils.isArgumentBooleanValue(stringIsTcpServerModeEnabled)) {
-				isTcpServerModeEnabled = Boolean.parseBoolean(stringRefreshRate);
+				isTcpServerModeEnabled = Boolean.parseBoolean(stringIsTcpServerModeEnabled);
 			}
 			else {
 				throw new RuntimeException(resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_TCP_SERVER_ENABLED_ARGUMENTS_MANDATORY));
