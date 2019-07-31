@@ -4,7 +4,7 @@ import com.internal.gameoflife.enums.ProgramArguments;
 
 public class ProgramArgumentsUtils {
 
-	public static final int MAX_ALOWED_ARGUMENTS = 4;
+	public static final int MAX_ALOWED_ARGUMENTS = 5;
 
 	public static String retrieveArgumentValue(String[] arguments, ProgramArguments programArguments){
 		return arguments[programArguments.ordinal()];
@@ -16,6 +16,10 @@ public class ProgramArgumentsUtils {
 
 	public static boolean isArgumentIntegerValue(String argumentValue) {
 		return argumentValue.matches("\\d+");
+	}
+	
+	public static boolean isArgumentBooleanValue(String argumentValue) {
+		return argumentValue.equalsIgnoreCase("true") || argumentValue.equalsIgnoreCase("false");
 	}
 	
 	public static boolean isArgumentValueFloatingNumber(String argumentValue) {

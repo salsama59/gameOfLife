@@ -49,8 +49,8 @@ public class GameOfLifeTest {
 
 	@Test
 	public void initializeGridLengthTest() {
-		String rowLength = "10";
-		String columnLength = "10";
+		String rowLength = "100";
+		String columnLength = "100";
 		String[] args = {rowLength, columnLength, "10", "30"};
 		int[][] grid = GameOfLife.initializeGridLength(args, null);
 		assertEquals(Integer.parseInt(rowLength), GridUtils.getGridRowLenth(grid));
@@ -77,28 +77,28 @@ public class GameOfLifeTest {
 	@Test
 	public void initializeGridRowLengthWithoutNumericValueTest() {
 		this.expectExceptionForRowValue();
-		String[] args = {"a", "10", "15", "30"};
+		String[] args = {"a", "10", "15", "30", "false"};
 		GameOfLife.initializeGridLength(args, null);
 	}
 
 	@Test
 	public void initializeGridRowLengthWithInvalidValueTest() {
 		this.expectExceptionForRowValue();
-		String[] args = {"", "10", "15", "30"};
+		String[] args = {"", "10", "15", "30", "false"};
 		GameOfLife.initializeGridLength(args, null);
 	}
 
 	@Test
 	public void initializeGridColumnLengthWithoutNumericValueTest() {
 		this.expectExceptionForColumnValue();
-		String[] args = {"10", "f", "10", "30"};
+		String[] args = {"10", "f", "10", "30", "false"};
 		GameOfLife.initializeGridLength(args, null);
 	}
 
 	@Test
 	public void initializeGridColumnLengthWithInvalidValueTest() {
 		this.expectExceptionForColumnValue();
-		String[] args = {"10", "", "15", "30"};
+		String[] args = {"10", "", "15", "30", "false"};
 		GameOfLife.initializeGridLength(args, null);
 	}
 

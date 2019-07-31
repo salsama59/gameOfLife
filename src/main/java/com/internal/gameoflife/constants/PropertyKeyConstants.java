@@ -10,5 +10,5 @@ public class PropertyKeyConstants {
 	public static final String DATA_SIMULATION_GRID_FILE_PATH_KEY = ROOT_PROPERTY_KEY + "data.simulation.grid.file.path";
 	public static final String DATA_SIMULATION_GRID_CSV_FILE_SEPARATOR_KEY = ROOT_PROPERTY_KEY + "data.simulation.grid.csv.file.separator";
 	public static final String DATA_SIMULATION_PARAMETER_FILE_PATH_KEY = ROOT_PROPERTY_KEY + "data.simulation.parameter.file.path";
-	public static final String ACCESS_MODE_KEY = ROOT_PROPERTY_KEY + "access.mode";
+	public static final String ACCESS_MODE_KEY = ROOT_PROPERTY_KEY + "tcp.server.access.mode";
 }

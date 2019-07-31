@@ -17,9 +17,11 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 	private long simulationIteration;
 	private DataManager dataManager;
 	private SimulationParameters simulationParameters;
+	private String simulationBuffer;
+	private boolean isSleeping;
 
 
-	public GameOfLifeSimulation(int[][] grid, int refreshRate, float initialActivatedCellPercentage, long simulationIteration) {
+	public GameOfLifeSimulation(int[][] grid, int refreshRate, float initialActivatedCellPercentage, long simulationIteration, boolean isTcpServerModeEnabled) {
 		this.grid = grid;
 		this.refreshRate = refreshRate;
 		this.dataManager = new DataManager();
@@ -29,20 +31,23 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 				this.simulationIteration,
 				initialActivatedCellPercentage,
 				GridUtils.getGridRowLenth(grid),
-				GridUtils.getGridColumnLenth(grid));
+				GridUtils.getGridColumnLenth(grid),
+				isTcpServerModeEnabled);
 	}
 
 	@Override
 	public void run() {
-		this.displayGrid();
+		this.displayGridInConsole();
 		this.updateSimulationIteration();
 		while (true) {
 			this.updateCellsStateInGrid();
-			this.displayGrid();
+			this.displayGridInConsole();
 			this.updateSimulationIteration();
 			this.getDataManager().saveDatas(grid, simulationParameters);
 			try {
+				this.setSleeping(true);
 				sleep(this.getRefreshRate() * 1000);
+				this.setSleeping(false);
 			} catch (InterruptedException ex) { 
 				System.out.println("The thread has been interrupted");
 			}
@@ -94,17 +99,23 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 		return proximityCounter;
 	}
 
-	private void displayGrid() {
-		System.out.println("********** Begining of Simulation iterration " + this.getSimulationIteration() + " **********");
+	private void displayGridInConsole() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("********** Begining of Simulation iterration " + this.getSimulationIteration() + " **********")
+		.append("\n");
 		Arrays.stream(this.getGrid())
 		.forEach(cellArray -> {
 			Arrays.stream(cellArray).forEach(cell -> {
-				System.out.print(cell);
-				System.out.print("|");
+				stringBuilder.append(cell);
+				stringBuilder.append("|");
 			});
-			System.out.println();
+			stringBuilder.append("\n");
 		});
-		System.out.println("********** End of Simulation iterration " + this.getSimulationIteration() + " **********");
+		stringBuilder.append("********** End of Simulation iterration " + this.getSimulationIteration() + " **********")
+		.append("\n");
+
+		System.out.println(stringBuilder.toString());
+		this.setSimulationBuffer(stringBuilder.toString());
 	}
 
 	private void updateSimulationIteration() {
@@ -150,6 +161,22 @@ public class GameOfLifeSimulation extends Thread implements Runnable{
 
 	public void setSimulationParameters(SimulationParameters simulationParameters) {
 		this.simulationParameters = simulationParameters;
+	}
+
+	public String getSimulationBuffer() {
+		return simulationBuffer;
+	}
+
+	public void setSimulationBuffer(String simulationBuffer) {
+		this.simulationBuffer = simulationBuffer;
+	}
+
+	public boolean isSleeping() {
+		return isSleeping;
+	}
+
+	public void setSleeping(boolean isSleeping) {
+		this.isSleeping = isSleeping;
 	}
 
 }

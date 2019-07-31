@@ -23,7 +23,7 @@ public class GameOfLifeSimulationTest {
 		int[][] initialGrid = {{1, 0, 1}, {0, 1, 0}, {1, 0, 1}};
 		int[][] expectedGrid = {{1, 1, 1}, {1, 0, 1}, {1, 1, 1}};
 
-		GameOfLifeSimulation gameOfLifeSimulation = new GameOfLifeSimulation(initialGrid, 1, 30f, 0l);
+		GameOfLifeSimulation gameOfLifeSimulation = new GameOfLifeSimulation(initialGrid, 1, 30f, 0l, false);
 		gameOfLifeSimulation.updateCellsStateInGrid();
 		int[][] resultingGrid = gameOfLifeSimulation.getGrid();
 

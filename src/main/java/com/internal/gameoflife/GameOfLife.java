@@ -17,16 +17,17 @@ import com.internal.gameoflife.data.DataManager;
 import com.internal.gameoflife.dto.SimulationParameters;
 import com.internal.gameoflife.enums.GridCellState;
 import com.internal.gameoflife.enums.ProgramArguments;
+import com.internal.gameoflife.server.ServerSideClass;
 import com.internal.gameoflife.simulation.GameOfLifeSimulation;
 import com.internal.gameoflife.utils.GridUtils;
 import com.internal.gameoflife.utils.ProgramArgumentsUtils;
 
 public class GameOfLife {
-	
+
 	public static Properties applicationProperties;
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		
+
 		String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
 		String appConfigPath = rootPath + "application.properties";
 		applicationProperties = new Properties();
@@ -61,6 +62,7 @@ public class GameOfLife {
 		float initialActivatedCellPercentage = 0f;
 		int refreshRate = 0;
 		long simulationIteration = 0;
+		boolean isTcpServerModeEnabled = false;
 
 		if(loadedGrid == null && ProgramArgumentsUtils.hasNecessaryArguments(args)) {
 			String stringInitialActivatedCellPercentage = ProgramArgumentsUtils.retrieveArgumentValue(args, ProgramArguments.INITIAL_LIVING_CELL_PERCENTAGE);
@@ -81,6 +83,15 @@ public class GameOfLife {
 				throw new RuntimeException("The refresh rate argument is mandatory and must be a number");
 			}
 
+			String stringIsTcpServerModeEnabled = ProgramArgumentsUtils.retrieveArgumentValue(args, ProgramArguments.TCP_SERVER_MODE);
+			if(ProgramArgumentsUtils.isArgumentValueValid(stringIsTcpServerModeEnabled) 
+					&& ProgramArgumentsUtils.isArgumentBooleanValue(stringIsTcpServerModeEnabled)) {
+				isTcpServerModeEnabled = Boolean.parseBoolean(stringRefreshRate);
+			}
+			else {
+				throw new RuntimeException("The tcp server enabled argument is mandatory and must be a boolean");
+			}
+
 			int cellTotalNumber = GridUtils.getGridRowLenth(grid) * GridUtils.getGridColumnLenth(grid);
 			int initialActiveCellNumber = (int) Math.floor(initialActivatedCellPercentage * cellTotalNumber/100);
 			grid = initializeGridCellsValue(grid, initialActiveCellNumber);
@@ -90,6 +101,7 @@ public class GameOfLife {
 			initialActivatedCellPercentage = loadedSimulationParameters.getInitialActivatedCellPercentage();
 			refreshRate = loadedSimulationParameters.getRefreshRate();
 			simulationIteration = loadedSimulationParameters.getSimulationIteration();
+			isTcpServerModeEnabled = loadedSimulationParameters.isTcpServerModeEnabled();
 		}
 		else {
 			initialActivatedCellPercentage = Float.parseFloat(applicationProperties.getProperty(PropertyKeyConstants.ACTIVATED_CELL_PERCENTAGE_KEY));
@@ -97,17 +109,21 @@ public class GameOfLife {
 			int cellTotalNumber = GridUtils.getGridRowLenth(grid) * GridUtils.getGridColumnLenth(grid);
 			int initialActiveCellNumber = (int) Math.floor(initialActivatedCellPercentage * cellTotalNumber/100);
 			grid = initializeGridCellsValue(grid, initialActiveCellNumber);
+			isTcpServerModeEnabled = Boolean.parseBoolean(applicationProperties.getProperty(PropertyKeyConstants.ACCESS_MODE_KEY));
 		}
 
-		GameOfLifeSimulation gameOfLifeSimulation = new GameOfLifeSimulation(grid, refreshRate, initialActivatedCellPercentage, simulationIteration);
+		GameOfLifeSimulation gameOfLifeSimulation = new GameOfLifeSimulation(grid, refreshRate, initialActivatedCellPercentage, simulationIteration, isTcpServerModeEnabled);
 		gameOfLifeSimulation.start();
+		if(isTcpServerModeEnabled) {
+			new ServerSideClass(gameOfLifeSimulation);
+		}
 	}
 
 	public static int[][] initializeGridLength(String[] programmArguments, SimulationParameters loadedSimulationParameters) {
 		int rowLength = 0;
 		int columnLength = 0;
 		if(loadedSimulationParameters == null && ProgramArgumentsUtils.hasNecessaryArguments(programmArguments)) {
-			
+
 			String stringRowLength = ProgramArgumentsUtils.retrieveArgumentValue(programmArguments, ProgramArguments.GRID_ROW_SIZE);
 			if(ProgramArgumentsUtils.isArgumentValueValid(stringRowLength) && ProgramArgumentsUtils.isArgumentIntegerValue(stringRowLength)) {
 				rowLength = Integer.valueOf(stringRowLength);

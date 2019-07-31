@@ -7,16 +7,18 @@ public class SimulationParameters {
 	private float initialActivatedCellPercentage;
 	private int rowLength;
 	private int columnLength;
+	private boolean isTcpServerModeEnabled;
 
 	public SimulationParameters() {}
-	
+
 	public SimulationParameters(int refreshRate, long simulationIteration, float initialActivatedCellPercentage,
-			int rowLength, int columnLength) {
+			int rowLength, int columnLength, boolean isTcpServerModeEnabled) {
 		this.refreshRate = refreshRate;
 		this.simulationIteration = simulationIteration;
 		this.initialActivatedCellPercentage = initialActivatedCellPercentage;
 		this.rowLength = rowLength;
 		this.columnLength = columnLength;
+		this.isTcpServerModeEnabled = isTcpServerModeEnabled;
 	}
 
 	public int getRefreshRate() {
@@ -50,12 +52,21 @@ public class SimulationParameters {
 		this.columnLength = columnLength;
 	}
 
+	public boolean isTcpServerModeEnabled() {
+		return isTcpServerModeEnabled;
+	}
+
+	public void setTcpServerModeEnabled(boolean isTcpServerModeEnabled) {
+		this.isTcpServerModeEnabled = isTcpServerModeEnabled;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + columnLength;
 		result = prime * result + Float.floatToIntBits(initialActivatedCellPercentage);
+		result = prime * result + (isTcpServerModeEnabled ? 1231 : 1237);
 		result = prime * result + refreshRate;
 		result = prime * result + rowLength;
 		result = prime * result + (int) (simulationIteration ^ (simulationIteration >>> 32));
@@ -81,6 +92,9 @@ public class SimulationParameters {
 				.floatToIntBits(other.initialActivatedCellPercentage)) {
 			return false;
 		}
+		if (isTcpServerModeEnabled != other.isTcpServerModeEnabled) {
+			return false;
+		}
 		if (refreshRate != other.refreshRate) {
 			return false;
 		}
@@ -92,7 +106,4 @@ public class SimulationParameters {
 		}
 		return true;
 	}
-	
-	
-
 }

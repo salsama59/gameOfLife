@@ -14,6 +14,8 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.internal.gameoflife.GameOfLife;
+import com.internal.gameoflife.constants.PropertyKeyConstants;
 import com.internal.gameoflife.dto.SimulationParameters;
 import com.internal.gameoflife.utils.TestsUtils;
 
@@ -21,16 +23,20 @@ public class DataManagerTest {
 
 	private SimulationParameters simulationParameters;
 	private final static int[][] gridToSave = {{1, 0, 1}, {0, 1, 0}, {1, 0, 1}};
+	private static String gridDataFilePath;
+	private static String parametersDataFilePath;
 
 	@BeforeClass
 	public static void loadProperties() throws FileNotFoundException, IOException {
-		TestsUtils.loadTestsConfigurationProperties();	
+		TestsUtils.loadTestsConfigurationProperties();
+		setGridDataFilePath(GameOfLife.applicationProperties.getProperty(PropertyKeyConstants.DATA_SIMULATION_GRID_FILE_PATH_KEY));
+		setParametersDataFilePath(GameOfLife.applicationProperties.getProperty(PropertyKeyConstants.DATA_SIMULATION_PARAMETER_FILE_PATH_KEY));
 	}
 
 	@After
 	public void deleteTestFiles() {
-		File gridSavedFile = new File("simulation_grid_data.csv");
-		File parametersSavedFile = new File("simulation_parameters_data.json");
+		File gridSavedFile = new File(getGridDataFilePath());
+		File parametersSavedFile = new File(getParametersDataFilePath());
 		gridSavedFile.delete();
 		parametersSavedFile.delete();
 	}
@@ -74,10 +80,26 @@ public class DataManagerTest {
 		DataManager dataManager = new DataManager();
 		dataManager.saveDatas(gridToSave, simulationParameters);
 
-		File gridSavedFile = new File("simulation_grid_data.csv");
-		File parametersSavedFile = new File("simulation_parameters_data.json");
+		File gridSavedFile = new File(getGridDataFilePath());
+		File parametersSavedFile = new File(getParametersDataFilePath());
 		assertTrue(gridSavedFile.exists());
 		assertTrue(parametersSavedFile.exists());
+	}
+
+	public String getGridDataFilePath() {
+		return gridDataFilePath;
+	}
+
+	public static void setGridDataFilePath(String gridDataFilePath) {
+		DataManagerTest.gridDataFilePath = gridDataFilePath;
+	}
+
+	public String getParametersDataFilePath() {
+		return parametersDataFilePath;
+	}
+
+	public static void setParametersDataFilePath(String parametersDataFilePath) {
+		DataManagerTest.parametersDataFilePath = parametersDataFilePath;
 	}
 
 }
