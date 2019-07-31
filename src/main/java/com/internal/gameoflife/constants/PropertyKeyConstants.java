@@ -1,5 +1,10 @@
 package com.internal.gameoflife.constants;
 
+/**
+ * Constants class representing the various key for the property files in the project.
+ * application.properties and message.properties
+ * @author syeponde
+ */
 public class PropertyKeyConstants {
 	
 	public static final String CONFIG_ROOT_PROPERTY_KEY = "application.config.";

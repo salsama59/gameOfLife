@@ -14,6 +14,11 @@ import com.internal.gameoflife.GameOfLife;
 import com.internal.gameoflife.constants.PropertyKeyConstants;
 import com.internal.gameoflife.dto.SimulationParameters;
 
+/**
+ * This class is responsible for the data management in the application.
+ * Allows the load and the save of datas, the verification of data files existence.
+ * @author syeponde
+ */
 public class DataManager {
 	private String csvFileSeparator;
 	private String gridSavedFilePath;
@@ -32,24 +37,39 @@ public class DataManager {
 				.applicationProperties
 				.getProperty(PropertyKeyConstants.DATA_SIMULATION_GRID_CSV_FILE_SEPARATOR_KEY);
 	}
-
+	
+	/**
+	 * Save the simulation related datas
+	 * @param grid the grid to save
+	 * @param simulationParameters the simulation parameters to save
+	 */
 	public void saveDatas(int[][] grid, SimulationParameters simulationParameters) {
 		this.saveSimulationGrid(grid);
 		this.saveSimulationParameters(simulationParameters);
 	}
-
+	
+	/**
+	 * Load the simulation related datas.
+	 */
 	public void loadDatas() {
 		this.setLoadedSimulationParameters(this.loadSimulationParameters());
 		this.setLoadedSimulationGrid(this.loadSimulationGid());
 	}
-
+	
+	/**
+	 * Check if the data files exists, grid data and the parameters data.
+	 * @return true if the grid data file and the parameters data file exits.
+	 */
 	public boolean isDataFilesExisting() {
 		File gridSavedFile = new File(this.getGridSavedFilePath());
 		File parametersSavedFile = new File(this.getParametersSavedFilePath());
 		return gridSavedFile.exists() && parametersSavedFile.exists();
 	}
 
-
+	/**
+	 * Load Specificaly the simulation grid data file if it exists
+	 * @return the grid loaded
+	 */
 	private int[][] loadSimulationGid() {
 		SimulationParameters loadedSimulationParameters = this.getLoadedSimulationParameters();
 		int[][] loadedGrid = new int[loadedSimulationParameters.getRowLength()][loadedSimulationParameters.getColumnLength()];
@@ -70,7 +90,11 @@ public class DataManager {
 
 		return loadedGrid;
 	}
-
+	
+	/**
+	 * Load the simulation parameters file data if it exists
+	 * @return the loaded simulation parameters file data
+	 */
 	private SimulationParameters loadSimulationParameters() {
 
 		ObjectMapper objectMapper = new ObjectMapper();
