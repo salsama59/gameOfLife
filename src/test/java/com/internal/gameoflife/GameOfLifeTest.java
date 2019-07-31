@@ -26,7 +26,7 @@ public class GameOfLifeTest {
 
 	@BeforeClass
 	public static void loadProperties() throws FileNotFoundException, IOException {
-		TestsUtils.loadTestsConfigurationProperties();
+		TestsUtils.loadTestsProperties();
 	}
 
 	@Test
@@ -114,11 +114,11 @@ public class GameOfLifeTest {
 
 	private void expectExceptionForRowValue() {
 		exception.expect(RuntimeException.class);
-		exception.expectMessage("The grid row lenght argument is mandatory and must be an integer value");
+		exception.expectMessage(GameOfLife.resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_GRID_ROW_ARGUMENTS_MANDATORY));
 	}
 
 	private void expectExceptionForColumnValue() {
 		exception.expect(RuntimeException.class);
-		exception.expectMessage("The grid column lenght argument is mandatory and must be an integer value");
+		exception.expectMessage(GameOfLife.resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_GRID_COLUMN_ARGUMENTS_MANDATORY));
 	}
 }

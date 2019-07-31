@@ -8,8 +8,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
 import com.internal.gameoflife.constants.PropertyKeyConstants;
@@ -17,7 +19,7 @@ import com.internal.gameoflife.data.DataManager;
 import com.internal.gameoflife.dto.SimulationParameters;
 import com.internal.gameoflife.enums.GridCellState;
 import com.internal.gameoflife.enums.ProgramArguments;
-import com.internal.gameoflife.server.ServerSideClass;
+import com.internal.gameoflife.server.GameOfLifeTcpServer;
 import com.internal.gameoflife.simulation.GameOfLifeSimulation;
 import com.internal.gameoflife.utils.GridUtils;
 import com.internal.gameoflife.utils.ProgramArgumentsUtils;
@@ -25,22 +27,19 @@ import com.internal.gameoflife.utils.ProgramArgumentsUtils;
 public class GameOfLife {
 
 	public static Properties applicationProperties;
+	public static ResourceBundle resourceBundle;
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-
-		String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-		String appConfigPath = rootPath + "application.properties";
-		applicationProperties = new Properties();
-		applicationProperties.load(new FileInputStream(appConfigPath));	
-
+		loadApplicationProperties();
+		loadApplicationResourceBundle();
 		SimulationParameters loadedSimulationParameters = null;
 		int[][] loadedGrid = null;
 		DataManager dataManager = new DataManager();
 
 		if(dataManager.isDataFilesExisting()) {
-			System.out.println("It seems that olds simulation datas files exists, do you want to load them ?");
-			System.out.println("Y -> yes");
-			System.out.println("N -> no");
+			System.out.println(resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_DATA_EXISTING));
+			System.out.println(resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_DATA_LOAD_YES));
+			System.out.println(resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_DATA_LOAD_NO));
 			Scanner scanner = new Scanner(System.in);
 			String line = scanner.nextLine();
 
@@ -71,7 +70,7 @@ public class GameOfLife {
 				initialActivatedCellPercentage = Float.parseFloat(stringInitialActivatedCellPercentage);
 			}
 			else {
-				throw new RuntimeException("The intial living cell percentage argument is mandatory and must be a number");
+				throw new RuntimeException(resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_CELL_PERCENTAGE_ARGUMENTS_MANDATORY));
 			}
 
 			String stringRefreshRate = ProgramArgumentsUtils.retrieveArgumentValue(args, ProgramArguments.REFRESH_RATE);
@@ -80,7 +79,7 @@ public class GameOfLife {
 				refreshRate = Integer.parseInt(stringRefreshRate);
 			}
 			else {
-				throw new RuntimeException("The refresh rate argument is mandatory and must be a number");
+				throw new RuntimeException(resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_REFRESH_RATE_ARGUMENTS_MANDATORY));
 			}
 
 			String stringIsTcpServerModeEnabled = ProgramArgumentsUtils.retrieveArgumentValue(args, ProgramArguments.TCP_SERVER_MODE);
@@ -89,7 +88,7 @@ public class GameOfLife {
 				isTcpServerModeEnabled = Boolean.parseBoolean(stringRefreshRate);
 			}
 			else {
-				throw new RuntimeException("The tcp server enabled argument is mandatory and must be a boolean");
+				throw new RuntimeException(resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_TCP_SERVER_ENABLED_ARGUMENTS_MANDATORY));
 			}
 
 			int cellTotalNumber = GridUtils.getGridRowLenth(grid) * GridUtils.getGridColumnLenth(grid);
@@ -115,7 +114,7 @@ public class GameOfLife {
 		GameOfLifeSimulation gameOfLifeSimulation = new GameOfLifeSimulation(grid, refreshRate, initialActivatedCellPercentage, simulationIteration, isTcpServerModeEnabled);
 		gameOfLifeSimulation.start();
 		if(isTcpServerModeEnabled) {
-			new ServerSideClass(gameOfLifeSimulation);
+			new GameOfLifeTcpServer(gameOfLifeSimulation);
 		}
 	}
 
@@ -129,7 +128,7 @@ public class GameOfLife {
 				rowLength = Integer.valueOf(stringRowLength);
 			}
 			else {
-				throw new RuntimeException("The grid row lenght argument is mandatory and must be an integer value");
+				throw new RuntimeException(resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_GRID_ROW_ARGUMENTS_MANDATORY));
 			}
 
 
@@ -138,7 +137,7 @@ public class GameOfLife {
 				columnLength = Integer.valueOf(stringColumnLength);
 			}
 			else {
-				throw new RuntimeException("The grid column lenght argument is mandatory and must be an integer value");
+				throw new RuntimeException(resourceBundle.getString(PropertyKeyConstants.APPLICATION_MESSAGE_GRID_COLUMN_ARGUMENTS_MANDATORY));
 			}
 		}
 		else if(loadedSimulationParameters != null){
@@ -192,5 +191,16 @@ public class GameOfLife {
 		}
 
 		return grid;
+	}
+
+	private static void loadApplicationResourceBundle() {
+		resourceBundle = ResourceBundle.getBundle("message", Locale.getDefault());
+	}
+
+	private static void loadApplicationProperties() throws IOException, FileNotFoundException {
+		String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+		String appConfigPath = rootPath + "application.properties";
+		applicationProperties = new Properties();
+		applicationProperties.load(new FileInputStream(appConfigPath));
 	}
 }
